@@ -1,0 +1,4 @@
+interface:
+  display_name: "VLP CRUD"
+  short_description: "Generate typed VLP CRUD pages with unified icons."
+  default_prompt: "Use $vlp-crud to build a VLP CRUD page that follows this repository's API, schema, CrudPage, and VlpIcon conventions."

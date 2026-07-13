@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "skills": [
+    {
+      "name": "vlp-crud",
+      "source": "vlp-crud",
+      "version": "1.0.0",
+      "agents": ["codex", "claude", "cursor", "copilot"],
+      "entryScripts": ["scripts/check-crud.mjs"]
+    }
+  ]
+}

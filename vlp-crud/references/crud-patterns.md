@@ -26,7 +26,7 @@ export interface StationRecord {
   updateTime?: string;
 }
 
-export const stationCrudSchema = defineCrudSchema<StationRecord>()({
+export const stationCrudSchema = createStandardCrudSchema<StationRecord>({
   name: 'station',
   rowKey: 'id',
   enableSelection: true,
@@ -136,17 +136,12 @@ const crud = useCrudPage<StationRecord>({
   api: createRequestCrudApiAdapter(urls, {
     contextParams: () => ({ mapId: props.mainId }),
   }),
+  load: {
+    enabled: () => Boolean(props.mainId),
+    watch: () => props.mainId,
+  },
   schema: stationCrudSchema,
 });
-
-watch(
-  () => props.mainId,
-  (mainId) => {
-    if (mainId) void crud.fetchList({ page: 1 });
-    else crud.clearData();
-  },
-  { immediate: true },
-);
 ```
 
 Render context-dependent CRUD only after a parent is selected:
@@ -157,21 +152,31 @@ Render context-dependent CRUD only after a parent is selected:
 
 ## Master-Detail
 
-Use the parent's derived selection instead of searching `dataSource` manually:
+Keep tightly coupled master and detail CRUD models in one composition page. Keep their schemas in separate files:
 
 ```ts
-watch(
-  () => parentCrud.selectedRow.value,
-  (row) => {
-    childParams.parentId = `${row?.id || ''}`;
-    if (row) void childCrud.fetchList({ page: 1 });
-    else childCrud.clearData();
+const selectedParentRow = parentCrud.selectedRow;
+const parentId = computed(() => `${selectedParentRow.value?.id || ''}`);
+
+const childCrud = useCrudPage<ChildRecord>({
+  api: createRequestCrudApiAdapter(childUrls, {
+    contextParams: () => ({ parentId: parentId.value }),
+  }),
+  load: {
+    enabled: () => Boolean(parentId.value),
+    watch: selectedParentRow,
   },
-  { immediate: true },
-);
+  schema: childCrudSchema,
+});
 ```
 
-Do not add a module-specific relation hook. Revisit a shared relation abstraction only after multiple domains require behavior beyond `selectedRow`, `clearData`, and one watcher.
+```vue
+<CrudPage :model="parentCrud" />
+<CrudPage v-if="parentId" :model="childCrud" />
+<CrudMasterDetailEmpty v-else :master-name="$t('ui.parent')" />
+```
+
+Do not add a module-specific relation hook. Do not extract a child Vue file that only initializes and renders one `CrudPage`. Extract it only for reusable UI, complex slots, dialogs, or independent state.
 
 ## Verification
 

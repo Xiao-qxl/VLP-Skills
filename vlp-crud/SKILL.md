@@ -15,10 +15,11 @@ Build CRUD pages with `useCrudPage + CrudPage + typed schema + API adapter`. Kee
    - Use `createCrudUrls` and `createRequestCrudApiAdapter` for conventional endpoints.
    - Pass an existing API module with `apiResolveOptions` when named methods already exist.
    - Use `createCrudApiAdapter` when query, payload, or result transformations are required.
-4. Create an entity type and one complete `defineCrudSchema<Entity>()` configuration. Put query fields, table columns, form/detail fields, toolbar actions, and row actions there.
-5. Instantiate `useCrudPage<Entity>()` in a thin Vue page. Use `contextParams` for dynamic foreign keys and `selectedRow` plus `clearData()` for master-detail behavior.
-6. Keep complex user, role, menu, or multilingual forms in the `form-drawer` slot. Do not force them into the automatic form.
-7. Run the bundled `scripts/check-crud.mjs <target> --typecheck` from this skill directory. Pass `--workspace <path>` when the current directory is not inside the target workspace. Fix every finding before handoff.
+4. Create an entity type and one complete `createStandardCrudSchema<Entity>()` configuration. Use `defineCrudSchema<Entity>()` only when standard actions and drawer defaults do not fit. Put query fields, table columns, form/detail fields, toolbar actions, and row actions in the schema file.
+5. Instantiate `useCrudPage<Entity>()` in a thin Vue page. Use `load.enabled/watch` for initial and dependency-driven loading, and `contextParams` for dynamic foreign keys.
+6. For tightly coupled master-detail CRUD, create both models in one composition page, derive the child foreign key from `masterCrud.selectedRow`, and render `CrudMasterDetailEmpty` until a master row is selected. Keep each entity schema separate; do not create a Vue component that only wraps one child `CrudPage`.
+7. Keep complex user, role, menu, or multilingual forms in the `form-drawer` slot. Do not force them into the automatic form.
+8. Run the bundled `scripts/check-crud.mjs <target> --typecheck` from this skill directory. Pass `--workspace <path>` when the current directory is not inside the target workspace. Fix every finding before handoff.
 
 ## Generation Rules
 
@@ -32,7 +33,10 @@ Build CRUD pages with `useCrudPage + CrudPage + typed schema + API adapter`. Kee
 - Keep schema toolbar icons as string names because `CrudToolbarActions` renders them with `VlpIcon`. Do not import an icon component only to configure a CRUD action.
 - Never generate direct `IconifyIcon`, `SvgIcon`, `createFromIconfontCN`, `@antdv-next/icons`, or `@ant-design/icons-vue` usage in a CRUD page. Product-level Iconfont registration belongs in the application plugin, not the page.
 - Use `copyFromForm` behavior through the request adapter. A configured `/copy` endpoint receives the edited copy payload; otherwise CRUD removes the row key and calls create.
-- Do not mutate `dataSource` or `pagination` from a business page. Use `fetchList`, `resetSelection`, and `clearData`.
+- Do not mutate `dataSource` or `pagination` from a business page. Use `load`, `fetchList`, `resetSelection`, and `clearData` through the public model.
+- Prefer `load: { immediate: true }` over `onMounted(fetchList)`. For dependent CRUD, use `load: { enabled: () => Boolean(parentId), watch: parentCrud.selectedRow }`; it resets selection and clears disabled child data.
+- Keep tightly coupled master and detail CRUD instances in one composition page. Extract a child Vue component only when it has reusable UI, complex slots, dialogs, or independent state.
+- Use `CrudMasterDetailEmpty` from `@vlp/web-base/crud` for the unselected detail state instead of copying `div + a-empty` markup.
 - Do not introduce domain-specific CRUD composables. Add behavior to the shared base only when it applies across domains.
 - Do not emit `as any`, broad compatibility wrappers, mojibake text, or duplicated CRUD plumbing.
 

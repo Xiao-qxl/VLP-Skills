@@ -137,6 +137,9 @@ try {
           if (pattern.test(line)) findings.push(`${path.relative(workspace, file)}:${index + 1} ${label}`);
         });
       }
+      if (/watch\s*\([\s\S]{0,800}selectedRow[\s\S]{0,800}(?:fetchList|clearData)/.test(source)) {
+        findings.push(`${path.relative(workspace, file)}: manual master-detail loading; use load.enabled/watch`);
+      }
     }
   }
 
@@ -145,6 +148,8 @@ try {
     'createCrudDuplicateCheckRule',
     'createCrudUrls',
     'createRequestCrudApiAdapter',
+    'createStandardCrudSchema',
+    'CrudMasterDetailEmpty',
     'defineCrudSchema',
     'useCrudPage',
   ];

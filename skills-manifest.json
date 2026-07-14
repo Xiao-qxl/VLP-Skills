@@ -4,7 +4,7 @@
     {
       "name": "vlp-crud",
       "source": "vlp-crud",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "agents": ["codex", "claude", "cursor", "copilot"],
       "entryScripts": ["scripts/check-crud.mjs"]
     }

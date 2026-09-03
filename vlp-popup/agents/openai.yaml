@@ -1,0 +1,4 @@
+interface:
+  display_name: "VLP Popup"
+  short_description: "Build VLP modal and drawer workflows safely."
+  default_prompt: "Use $vlp-popup to implement a VLP modal or drawer with correct state, data, and async-submit handling."

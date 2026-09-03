@@ -20,6 +20,22 @@ VLP-Skills/
       crud-patterns.md
     scripts/
       check-crud.mjs
+  vlp-popup/
+    SKILL.md
+    agents/openai.yaml
+    references/popup-patterns.md
+  vlp-form/
+    SKILL.md
+    agents/openai.yaml
+    references/form-patterns.md
+  vlp-table/
+    SKILL.md
+    agents/openai.yaml
+    references/table-patterns.md
+  vlp-icon/
+    SKILL.md
+    agents/openai.yaml
+    references/icon-usage.md
 ```
 
 `VLP-Skills` 是唯一维护源。项目或个人技能目录中的内容由安装器复制生成，不要直接修改生成副本。
@@ -78,12 +94,24 @@ npx skills add Xiao-qxl/VLP-Skills --skill vlp-crud
 
 `vlp-crud` 会先读取项目实体、API 和相邻页面，再按 `useCrudPage + CrudPage + typed schema + API adapter` 生成或重构页面。
 
+当前技能覆盖：
+
+| Skill | 适用场景 |
+| --- | --- |
+| `vlp-crud` | 标准列表、查询、分页、增删改查、导入导出、主从 CRUD |
+| `vlp-popup` | 模态框、抽屉、受控开关、连接组件、提交锁定、关闭守卫 |
+| `vlp-form` | Schema 表单、校验、动态字段、远程/字典选项、值转换 |
+| `vlp-table` | 非标准 VXE Grid、代理查询、搜索表单、单元格渲染器和插槽 |
+| `vlp-icon` | Iconify、本地 SVG、Iconfont、统一尺寸与可访问性 |
+
+选择表格技能时，标准业务管理页优先 `vlp-crud`；只有需要直接控制 VXE Grid 的高定制表格才使用 `vlp-table`。模态框/抽屉内的复杂表单可同时使用 `vlp-popup` 和 `vlp-form`。
+
 ## 判断 Skill 是否触发
 
 不同 Agent 的界面提示不同，没有一个跨客户端统一的触发标记。可通过以下方式确认：
 
-1. 新开会话后，在 Agent 的 Skills 列表或斜杠命令列表中确认存在 `vlp-crud`。
-2. 显式调用 `vlp-crud` 是最确定的方式；Codex 可使用 `$vlp-crud`，支持斜杠技能的客户端可使用 `/vlp-crud`。
+1. 新开会话后，在 Agent 的 Skills 列表或斜杠命令列表中确认目标技能存在。
+2. 显式调用技能是最确定的方式；例如 Codex 可使用 `$vlp-form`，支持斜杠技能的客户端可使用 `/vlp-form`。
 3. 自动触发测试时，使用下面的提示词，并要求 Agent 先报告采用的 Skill：
 
 ```text

@@ -1,0 +1,4 @@
+interface:
+  display_name: "VLP Icon"
+  short_description: "Use the unified icon system across VLP applications."
+  default_prompt: "Use $vlp-icon to add icons to a VLP CRUD page or custom component following the VlpIcon conventions."

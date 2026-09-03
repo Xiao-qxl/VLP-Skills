@@ -1,0 +1,4 @@
+interface:
+  display_name: "VLP Table"
+  short_description: "Build custom VLP data grids with VXE Table."
+  default_prompt: "Use $vlp-table to implement or review a custom VLP data grid without duplicating CRUD behavior."

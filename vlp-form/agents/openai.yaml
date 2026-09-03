@@ -1,0 +1,4 @@
+interface:
+  display_name: "VLP Form"
+  short_description: "Build typed schema-driven forms for VLP apps."
+  default_prompt: "Use $vlp-form to build or review a typed VLP form with correct schema, validation, and value lifecycle."
